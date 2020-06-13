@@ -5,6 +5,6 @@ import com.Bookstore.model.UserBilling;
 
 public interface BillingAddressService
 {
-	public BillingAddress setByUserBilling(UserBilling userBilling, BillingAddress billingAddre);
+	public BillingAddress setByUserBilling(UserBilling userBilling, BillingAddress billingAddress);
    
 }
