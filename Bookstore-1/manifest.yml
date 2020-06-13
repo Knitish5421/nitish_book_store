@@ -1,0 +1,8 @@
+applications:
+- name: Bookstore-1
+path: target/Bookstore-1.jar
+domain: cfapps.io
+memory: 1G
+instances: 1
+services:
+- bookApp

@@ -1,0 +1,63 @@
+package com.Bookstore.service.impl;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.Bookstore.model.CartItem;
+import com.Bookstore.model.ShoppingCart;
+import com.Bookstore.respository.ShoppingCartRespository;
+
+@Service
+public class ShoppingCartServiceImp implements ShoppingCartService
+{
+  @Autowired
+  ShoppingCartRespository shoppingCartRespository;
+  
+  @Autowired
+  CartItemService cartItemService;
+
+@Override
+public ShoppingCart updateShoppingCart(ShoppingCart shoppingCart)
+{
+	BigDecimal cartTotal = new BigDecimal(0);
+	List<CartItem> cartItemList = cartItemService.findByShoppingCart(shoppingCart);
+	
+	for(CartItem cartItem : cartItemList)
+	{
+		if(cartItem.getBook().getInStockNumber()>0)
+		{
+			cartItemService.updateCartItem(cartItem);
+			cartTotal = cartTotal.add(cartItem.getSubTotal());
+		}
+	}
+	shoppingCart.setGrandTotal(cartTotal);
+	 shoppingCartRespository.save(shoppingCart);
+	 return shoppingCart;
+	
+}
+
+@Override
+public void clearShoppingCart(ShoppingCart shoppingCart)
+{
+   List<CartItem> cartItemList = cartItemService.findByShoppingCart(shoppingCart);
+    
+   for(CartItem cartItem : cartItemList)
+   {
+	   cartItem.setShoppingCart(null);
+	   cartItemService.save(cartItem);
+   }
+   shoppingCart.setGrandTotal(new BigDecimal(0));
+   shoppingCartRespository.save(shoppingCart);
+}
+
+
+@Override
+public void updateShoppingCartGrandTotalById(BigDecimal grandTotal, Long id)
+{
+	shoppingCartRespository.updateShoppingCartGrandTotalById(grandTotal,id);
+	
+}
+}
